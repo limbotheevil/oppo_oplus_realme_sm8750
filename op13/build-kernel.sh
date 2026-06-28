@@ -14,11 +14,11 @@ USE_PATCH_LINUX=y       # KPM: KpatchNext(KPN)
 KSU_BRANCH=r            # ReSukiSU (项目默认)
 APPLY_LZ4=y
 APPLY_LZ4KD=n
-APPLY_BETTERNET=n       # 关: 避开 IP6_NF_NAT 的 VINTF "设备出现问题" 提示
+APPLY_BETTERNET=y       # 关: 避开 IP6_NF_NAT 的 VINTF "设备出现问题" 提示
 APPLY_BBR=n
 APPLY_DROIDSPACES=n
 APPLY_ADIOS=y
-APPLY_REKERNEL=n
+APPLY_REKERNEL=y
 APPLY_BBG=y
 
 if [[ "$KSU_BRANCH" == "y" || "$KSU_BRANCH" == "Y" ]]; then
