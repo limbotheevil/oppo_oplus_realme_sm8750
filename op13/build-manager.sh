@@ -20,10 +20,6 @@ KS_ALIAS="${KS_ALIAS:?}"; KS_STOREPASS="${KS_STOREPASS:?}"; KS_KEYPASS="${KS_KEY
 for t in zip unzip git; do command -v "$t" >/dev/null 2>&1 || MISS="${MISS:-} $t"; done
 if [ -n "${MISS:-}" ] && command -v apt-get >/dev/null 2>&1; then apt-get update -qq && apt-get install -y -qq $MISS; fi
 
-APKSIGNER="$(ls "$ANDROID_SDK_ROOT"/build-tools/*/apksigner | sort -V | tail -1)"
-ZIPALIGN="$(ls "$ANDROID_SDK_ROOT"/build-tools/*/zipalign | sort -V | tail -1)"
-echo ">>> apksigner=$APKSIGNER"
-
 rm -rf "$WORK"; mkdir -p "$WORK" "$OUT"; cd "$WORK"
 
 echo ">>> [1/6] clone ReSukiSU ($RESUKISU_BRANCH) + susfs4oki ($SUSFS_BRANCH)"
@@ -50,6 +46,11 @@ git config --global --add safe.directory "$WORK/ReSukiSU" || true
 ( cd ReSukiSU/manager && ./gradlew --no-daemon assembleRelease -Pcommit="$(git -C .. rev-parse --short HEAD)" )
 GAPK="$(ls "$WORK"/ReSukiSU/manager/app/build/outputs/apk/release/ReSukiSU_*_*-arm64-v8a-release.apk | head -1)"
 echo ">>> gradle 产物: $GAPK"
+
+# gradle 跑完后 build-tools 一定就位(本地预装 / CI 由 gradle 自动下载)
+APKSIGNER="$(ls "$ANDROID_SDK_ROOT"/build-tools/*/apksigner | sort -V | tail -1)"
+ZIPALIGN="$(ls "$ANDROID_SDK_ROOT"/build-tools/*/zipalign | sort -V | tail -1)"
+echo ">>> apksigner=$APKSIGNER"
 
 echo ">>> [5/6] 注入 libksud.so(内置 ksud) + zipalign"
 cp "$GAPK" work.apk

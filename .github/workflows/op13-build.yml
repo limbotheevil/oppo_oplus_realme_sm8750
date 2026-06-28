@@ -15,7 +15,8 @@ jobs:
       - name: install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends aria2 flex bison libssl-dev bc cpio zip unzip perl python3 git wget curl rsync make
+          sudo apt-get install -y --no-install-recommends \
+            aria2 flex bison libssl-dev libelf-dev zlib1g-dev bc cpio zip unzip perl python3 git wget curl rsync make
       - name: build kernel (prebuilt clang18 + LLVM=1)
         run: bash op13/build-kernel.sh
       - name: collect
@@ -35,9 +36,8 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
-      - name: install SDK components
-        run: yes | sdkmanager "platforms;android-37" "build-tools;36.1.0" "ndk;29.0.14206865" "platform-tools"
+      # setup-android@v4 + 让 gradle(AGP) 自动下载 compileSdk37/build-tools36.1.0/ndk29
+      - uses: android-actions/setup-android@v4
       - name: restore keystore
         run: echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > op13/keys/op13_rsa2048.keystore
       - name: build manager (susfs2.2.0 + selfsign + ksud)
