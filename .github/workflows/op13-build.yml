@@ -39,7 +39,9 @@ jobs:
       # setup-android@v4 + 让 gradle(AGP) 自动下载 compileSdk37/build-tools36.1.0/ndk29
       - uses: android-actions/setup-android@v4
       - name: restore keystore
-        run: echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > op13/keys/op13_rsa2048.keystore
+        run: |
+          mkdir -p op13/keys
+          echo "${{ secrets.KEYSTORE_B64 }}" | base64 -d > op13/keys/op13_rsa2048.keystore
       - name: build manager (susfs2.2.0 + selfsign + ksud)
         env:
           ROOT: ${{ github.workspace }}/op13
